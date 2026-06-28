@@ -1,0 +1,23 @@
+<view class="page-shell">
+  <view class="stat-card report-hero">
+    <view class="report-hero__label">这周的好消息</view>
+    <view class="report-hero__highlight">{{report.highlight}}</view>
+    <view class="report-hero__suggestion">{{report.suggestion}}</view>
+  </view>
+
+  <view class="report-grid">
+    <view class="stat-card report-stat">
+      <view class="report-stat__value">{{report.completionRate}}%</view>
+      <view class="report-stat__label">任务完成率</view>
+    </view>
+    <view class="stat-card report-stat green">
+      <view class="report-stat__value">{{report.starsEarned}}</view>
+      <view class="report-stat__label">本周新增星星</view>
+    </view>
+  </view>
+
+  <view class="panel report-note">
+    <view class="section-title">最容易卡住的时刻</view>
+    <view class="section-subtitle">{{report.hardestMoment}}</view>
+  </view>
+</view>

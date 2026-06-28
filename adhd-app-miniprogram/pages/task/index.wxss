@@ -1,0 +1,60 @@
+.create-panel {
+  padding: 28rpx;
+}
+
+.task-input {
+  height: 88rpx;
+  margin-top: 24rpx;
+  padding: 0 24rpx;
+  border-radius: 24rpx;
+  background: #fff7ed;
+}
+
+.primary-button {
+  margin-top: 20rpx;
+}
+
+.section-header {
+  margin: 28rpx 0 12rpx;
+}
+
+.task-item {
+  margin-top: 20rpx;
+  padding: 28rpx;
+}
+
+.task-item__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-item__name {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.task-item__stars {
+  color: #ff8a5b;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.task-item__schedule,
+.task-item__steps {
+  margin-top: 12rpx;
+  color: #7f7a75;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.task-item__action {
+  margin-top: 20rpx;
+}
+
+.task-item__done {
+  margin-top: 20rpx;
+  color: #24756f;
+  font-size: 24rpx;
+  font-weight: 600;
+}

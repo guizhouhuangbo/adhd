@@ -1,0 +1,54 @@
+.report-hero {
+  padding: 32rpx;
+  background: linear-gradient(140deg, #ffffff, #fff2d9 60%, #fffef8);
+}
+
+.report-hero__label {
+  color: #b46b24;
+  font-size: 22rpx;
+}
+
+.report-hero__highlight {
+  margin-top: 18rpx;
+  font-size: 38rpx;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.report-hero__suggestion {
+  margin-top: 16rpx;
+  color: #7f7a75;
+  font-size: 26rpx;
+  line-height: 1.7;
+}
+
+.report-grid {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.report-stat {
+  flex: 1;
+  padding: 28rpx;
+}
+
+.report-stat.green {
+  background: #effcfb;
+}
+
+.report-stat__value {
+  font-size: 42rpx;
+  font-weight: 700;
+}
+
+.report-stat__label {
+  margin-top: 12rpx;
+  color: #7f7a75;
+  font-size: 24rpx;
+}
+
+.report-note {
+  margin-top: 24rpx;
+  padding: 28rpx;
+}

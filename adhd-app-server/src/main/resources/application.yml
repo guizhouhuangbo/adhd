@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: adhd-app-server
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/adhd?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: adhd
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+
+sa-token:
+  token-name: Authorization
+  timeout: 2592000
+  is-read-header: true
+  is-read-cookie: false
+  is-read-body: false
+  token-prefix: Bearer
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    com.huangbo.adhd: info
+
+app:
+  wechat:
+    app-id: ${WECHAT_APP_ID:}
+    app-secret: ${WECHAT_APP_SECRET:}
+  model:
+    base-url: ${MODEL_BASE_URL:http://43.142.79.65:8080/v1}
+    api-key: ${MODEL_API_KEY:EMPTY}
+    model: ${MODEL_NAME:gpt-4o-mini}

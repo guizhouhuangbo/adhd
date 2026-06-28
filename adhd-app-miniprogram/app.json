@@ -1,0 +1,46 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/task/index",
+    "pages/chat/index",
+    "pages/report/index",
+    "pages/profile/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "星星屋",
+    "navigationBarBackgroundColor": "#FFF8F0",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFF8F0",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#8F8A83",
+    "selectedColor": "#FF8A5B",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/task/index",
+        "text": "任务"
+      },
+      {
+        "pagePath": "pages/chat/index",
+        "text": "AI 陪伴"
+      },
+      {
+        "pagePath": "pages/report/index",
+        "text": "周报"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

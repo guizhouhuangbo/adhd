@@ -1,0 +1,101 @@
+.hero {
+  padding: 32rpx;
+  background: linear-gradient(160deg, #fff2d7, #ffe0cc 55%, #dffff6);
+}
+
+.hero__tag {
+  display: inline-block;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.7);
+  color: #9f6026;
+  font-size: 22rpx;
+}
+
+.hero__title {
+  margin-top: 20rpx;
+  font-size: 44rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.hero__desc {
+  margin-top: 16rpx;
+  color: #7a6a5f;
+  font-size: 26rpx;
+}
+
+.hero__stats {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+
+.hero__stat {
+  flex: 1;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.accent {
+  background: rgba(78, 205, 196, 0.16);
+}
+
+.hero__stat-number {
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.hero__stat-label {
+  margin-top: 10rpx;
+  color: #7f7a75;
+  font-size: 22rpx;
+}
+
+.section {
+  margin-top: 24rpx;
+  padding: 28rpx;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+  padding: 24rpx;
+  box-shadow: none;
+  background: #fffaf5;
+}
+
+.task-row__name {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.task-row__meta {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #8f8a83;
+}
+
+.task-row__badge {
+  padding: 12rpx 20rpx;
+  border-radius: 999rpx;
+  background: #fff1cf;
+  color: #ad6a00;
+  font-size: 22rpx;
+}
+
+.task-row__badge.done {
+  background: #e5faf7;
+  color: #24756f;
+}
+
+.mint-panel {
+  background: linear-gradient(180deg, #ffffff, #f1fffc);
+}
+
+.primary-button {
+  margin-top: 24rpx;
+}

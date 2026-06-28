@@ -1,0 +1,17 @@
+<view class="page-shell">
+  <view class="panel profile-card">
+    <view class="profile-card__title">{{profile.parentName}}</view>
+    <view class="profile-card__subtitle">孩子 {{profile.childName}} · {{profile.childAge}} 岁</view>
+    <view class="profile-card__stars">累计获得 {{profile.totalStars}} 颗星</view>
+  </view>
+
+  <view class="panel profile-section">
+    <view class="section-title">下一份奖励</view>
+    <view class="section-subtitle">{{profile.nextReward}}</view>
+  </view>
+
+  <view class="panel profile-section mint">
+    <view class="section-title">产品边界</view>
+    <view class="section-subtitle">这是家长助手，不替代医生诊断或治疗建议。</view>
+  </view>
+</view>

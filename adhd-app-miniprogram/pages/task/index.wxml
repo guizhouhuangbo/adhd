@@ -1,0 +1,26 @@
+<view class="page-shell">
+  <view class="panel create-panel">
+    <view class="section-title">添加一个真实场景任务</view>
+    <view class="section-subtitle">比如: 放学后整理书包、睡前洗澡、写语文作业</view>
+    <input class="task-input" placeholder="输入任务名称" value="{{taskName}}" bindinput="onTaskNameInput" />
+    <button class="primary-button" bindtap="createTask">创建并自动拆分</button>
+  </view>
+
+  <view class="section-header">
+    <view class="section-title">任务列表</view>
+    <view class="section-subtitle">每个任务都拆成 3-5 个可执行小步骤</view>
+  </view>
+
+  <block wx:for="{{tasks}}" wx:key="id">
+    <view class="task-card task-item">
+      <view class="task-item__top">
+        <view class="task-item__name">{{item.name}}</view>
+        <view class="task-item__stars">+{{item.rewardStars}} 星</view>
+      </view>
+      <view class="task-item__schedule">提醒时间: {{item.scheduleLabel}}</view>
+      <view class="task-item__steps">{{item.stepsText}}</view>
+      <button class="ghost-button task-item__action" wx:if="{{!item.completed}}" data-id="{{item.id}}" bindtap="completeTask">完成打卡</button>
+      <view class="task-item__done" wx:else>今天已打卡</view>
+    </view>
+  </block>
+</view>

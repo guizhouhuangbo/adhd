@@ -1,0 +1,38 @@
+{
+  "description": "ADHD helper miniprogram MVP",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": false,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.6.6",
+  "appid": "wxb329ab8c6e6904b3",
+  "projectname": "adhd-app-miniprogram",
+  "simulatorPluginLibVersion": {},
+  "editorSetting": {}
+}

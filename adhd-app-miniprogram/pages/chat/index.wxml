@@ -1,0 +1,20 @@
+<view class="page-shell chat-page">
+  <view class="chat-card chat-header">
+    <view class="section-title">今天先把情绪放下来</view>
+    <view class="section-subtitle">AI 会先共情,再给你一个今晚能执行的小建议</view>
+  </view>
+
+  <scroll-view class="chat-scroll" scroll-y="true" scroll-with-animation="true" scroll-into-view="{{scrollIntoView}}">
+    <block wx:for="{{messages}}" wx:key="index">
+      <view class="bubble bubble--{{item.role}} {{item.streaming ? 'bubble--streaming' : ''}}">
+        <rich-text nodes="{{item.html}}"></rich-text>
+      </view>
+    </block>
+    <view id="chat-bottom" class="chat-bottom-anchor"></view>
+  </scroll-view>
+
+  <view class="composer">
+    <input class="composer__input" placeholder="比如：孩子写作业拖了 3 小时怎么办" value="{{inputValue}}" bindinput="onInput" bindconfirm="sendMessage" confirm-type="send" />
+    <button class="composer__button" bindtap="sendMessage" loading="{{isSending}}" disabled="{{isSending}}">发送</button>
+  </view>
+</view>

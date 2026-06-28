@@ -1,0 +1,60 @@
+page {
+  background: #fff8f0;
+  color: #2f2a27;
+  font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
+}
+
+.page-shell {
+  padding: 24rpx;
+}
+
+.hero-card,
+.panel,
+.task-card,
+.chat-card,
+.stat-card {
+  background: #ffffff;
+  border-radius: 28rpx;
+  box-shadow: 0 16rpx 40rpx rgba(255, 184, 77, 0.12);
+}
+
+.section-title {
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.section-subtitle {
+  margin-top: 8rpx;
+  color: #8f8a83;
+  font-size: 24rpx;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #ffb84d, #ff8a5b);
+  color: #ffffff;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  line-height: 88rpx;
+}
+
+.ghost-button {
+  border-radius: 999rpx;
+  border: 2rpx solid #4ecdc4;
+  color: #2f827c;
+  background: #effcfb;
+  font-size: 28rpx;
+  line-height: 84rpx;
+}
+
+.hero__login-row {
+  margin-top: 24rpx;
+}
+
+.hero__login-status {
+  color: #6f6a64;
+  font-size: 24rpx;
+}
+
+.hero__login-button {
+  margin-top: 16rpx;
+}

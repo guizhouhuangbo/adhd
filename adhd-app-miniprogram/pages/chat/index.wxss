@@ -1,0 +1,108 @@
+.chat-page {
+  height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 180rpx;
+}
+
+.chat-header {
+  padding: 28rpx;
+}
+
+.chat-scroll {
+  flex: 1;
+  min-height: 0;
+  padding-bottom: 24rpx;
+}
+
+.chat-bottom-anchor {
+  height: 1rpx;
+}
+
+.bubble {
+  max-width: 86%;
+  margin-top: 20rpx;
+  padding: 24rpx;
+  border-radius: 28rpx;
+  font-size: 28rpx;
+  line-height: 1.7;
+}
+
+.bubble rich-text {
+  display: block;
+}
+
+.bubble--assistant {
+  background: #ffffff;
+  color: #2f2a27;
+  border-top-left-radius: 8rpx;
+}
+
+.bubble--user {
+  margin-left: auto;
+  background: linear-gradient(135deg, #4ecdc4, #7ae2da);
+  color: #0f403d;
+  border-top-right-radius: 8rpx;
+}
+
+.bubble--streaming {
+  position: relative;
+}
+
+.bubble--streaming::after {
+  content: '';
+  display: inline-block;
+  width: 10rpx;
+  height: 10rpx;
+  margin-left: 10rpx;
+  border-radius: 50%;
+  background: #ff8a5b;
+  vertical-align: middle;
+  animation: bubble-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes bubble-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.composer {
+  position: fixed;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18rpx 40rpx rgba(0, 0, 0, 0.08);
+}
+
+.composer__input {
+  flex: 1;
+  height: 76rpx;
+  padding: 0 20rpx;
+  border-radius: 20rpx;
+  background: #fff7ed;
+}
+
+.composer__button {
+  min-width: 148rpx;
+  height: 76rpx;
+  line-height: 76rpx;
+  border-radius: 20rpx;
+  background: #ff8a5b;
+  color: #ffffff;
+  font-size: 26rpx;
+}

@@ -1,0 +1,41 @@
+<view class="page-shell">
+  <view class="hero-card hero">
+    <view class="hero__tag">陪你少吼一点,看见更多进步</view>
+    <view class="hero__title">{{dashboard.userName}}，今天和 {{dashboard.childName}} 一起拿星星</view>
+    <view class="hero__desc">{{dashboard.encouragement}}</view>
+    <view class="hero__login-row">
+      <view class="hero__login-status">登录状态：{{loginStatus}}</view>
+      <button class="ghost-button hero__login-button" bindtap="handleLogin">重新登录微信</button>
+    </view>
+    <view class="hero__stats">
+      <view class="hero__stat">
+        <view class="hero__stat-number">{{dashboard.totalStars}}</view>
+        <view class="hero__stat-label">累计星星</view>
+      </view>
+      <view class="hero__stat accent">
+        <view class="hero__stat-number">{{dashboard.streakDays}}</view>
+        <view class="hero__stat-label">连续坚持</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel section">
+    <view class="section-title">今日任务</view>
+    <view class="section-subtitle">把大任务拆小一点,孩子更容易做到</view>
+    <block wx:for="{{dashboard.todayTasks}}" wx:key="id">
+      <view class="task-card task-row">
+        <view>
+          <view class="task-row__name">{{item.name}}</view>
+          <view class="task-row__meta">奖励 {{item.rewardStars}} 颗星 · {{item.scheduleLabel}}</view>
+        </view>
+        <view class="task-row__badge {{item.completed ? 'done' : ''}}">{{item.completed ? '已完成' : '待打卡'}}</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="panel section mint-panel">
+    <view class="section-title">今日建议</view>
+    <view class="section-subtitle">先夸努力,再提提醒,比直接催更有效</view>
+    <button class="primary-button" bindtap="openChat">去问 AI 家长助手</button>
+  </view>
+</view>
