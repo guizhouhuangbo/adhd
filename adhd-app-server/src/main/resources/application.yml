@@ -19,7 +19,7 @@ sa-token:
   is-read-header: true
   is-read-cookie: false
   is-read-body: false
-  is-prefix: Bearer
+  token-prefix: Bearer
 
 mybatis-plus:
   configuration:
