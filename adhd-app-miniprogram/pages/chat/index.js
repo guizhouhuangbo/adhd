@@ -1,6 +1,9 @@
 const api = require('../../utils/api');
 const { markdownToHtml } = require('../../utils/markdown');
 
+const STREAM_RENDER_INTERVAL = 36;
+const STREAM_RENDER_STEP = 3;
+
 function formatMessage(role, content, streaming = false) {
   return {
     role,
@@ -25,6 +28,11 @@ const DEFAULT_MESSAGES = [
 
 Page({
   bottomScrollTimer: null,
+  streamRenderTimer: null,
+  pendingStreamText: '',
+  activeAssistantIndex: -1,
+  streamFinished: false,
+  streamCompletionResolver: null,
 
   data: {
     inputValue: '',
@@ -74,6 +82,88 @@ Page({
       clearTimeout(this.bottomScrollTimer);
       this.bottomScrollTimer = null;
     }
+    if (this.streamRenderTimer) {
+      clearTimeout(this.streamRenderTimer);
+      this.streamRenderTimer = null;
+    }
+  },
+
+  resetStreamState() {
+    if (this.streamRenderTimer) {
+      clearTimeout(this.streamRenderTimer);
+      this.streamRenderTimer = null;
+    }
+    this.pendingStreamText = '';
+    this.activeAssistantIndex = -1;
+    this.streamFinished = false;
+    this.streamCompletionResolver = null;
+  },
+
+  startStreamRender(assistantIndex) {
+    this.resetStreamState();
+    this.activeAssistantIndex = assistantIndex;
+  },
+
+  enqueueStreamText(chunk) {
+    if (!chunk) {
+      return;
+    }
+    this.pendingStreamText += chunk;
+    this.flushStreamRender();
+  },
+
+  flushStreamRender() {
+    if (this.streamRenderTimer || this.activeAssistantIndex < 0) {
+      return;
+    }
+
+    this.streamRenderTimer = setTimeout(() => {
+      this.streamRenderTimer = null;
+
+      const assistantMessage = this.data.messages[this.activeAssistantIndex];
+      if (!assistantMessage) {
+        this.resetStreamState();
+        return;
+      }
+
+      if (!this.pendingStreamText) {
+        if (this.streamFinished && this.streamCompletionResolver) {
+          const resolve = this.streamCompletionResolver;
+          this.streamCompletionResolver = null;
+          resolve();
+        }
+        return;
+      }
+
+      const nextText = this.pendingStreamText.slice(0, STREAM_RENDER_STEP);
+      this.pendingStreamText = this.pendingStreamText.slice(STREAM_RENDER_STEP);
+      applyAssistantMessage(this, this.activeAssistantIndex, assistantMessage.content + nextText, true);
+
+      if (this.pendingStreamText) {
+        this.flushStreamRender();
+        return;
+      }
+
+      if (this.streamFinished && this.streamCompletionResolver) {
+        const resolve = this.streamCompletionResolver;
+        this.streamCompletionResolver = null;
+        resolve();
+        return;
+      }
+
+      this.flushStreamRender();
+    }, STREAM_RENDER_INTERVAL);
+  },
+
+  waitForStreamRender() {
+    this.streamFinished = true;
+    if (!this.pendingStreamText && !this.streamRenderTimer) {
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+      this.streamCompletionResolver = resolve;
+      this.flushStreamRender();
+    });
   },
 
   loadHistory() {
@@ -115,18 +205,14 @@ Page({
     }, () => this.scrollToBottom());
 
     const assistantIndex = nextMessages.length - 1;
+    this.startStreamRender(assistantIndex);
 
     api.streamChatMessage(trimmed, {
       onChunk: (chunk) => {
-        const assistantMessage = this.data.messages[assistantIndex];
-        if (!assistantMessage) {
-          return;
-        }
-
-        const content = assistantMessage.content + chunk;
-        applyAssistantMessage(this, assistantIndex, content, true);
+        this.enqueueStreamText(chunk);
       },
     })
+      .then(() => this.waitForStreamRender())
       .then(() => {
         const assistantMessage = this.data.messages[assistantIndex];
         if (!assistantMessage) {
@@ -142,16 +228,19 @@ Page({
 
         api.sendChatMessage(trimmed)
           .then((response) => {
+            this.resetStreamState();
             applyAssistantMessage(this, assistantIndex, response.reply || 'AI 暂时没有回应，请稍后再试。', false);
             this.setData({ isSending: false });
           })
           .catch((error) => {
+            this.resetStreamState();
             applyAssistantMessage(this, assistantIndex, 'AI 暂时没有回应，请稍后再试。', false);
             this.setData({ isSending: false });
             wx.showToast({ title: (error && error.msg) || (error && error.message) || 'AI 暂时没有回应', icon: 'none' });
           });
       })
       .catch((error) => {
+        this.resetStreamState();
         const assistantMessage = this.data.messages[assistantIndex];
         if (!assistantMessage || !assistantMessage.content) {
           applyAssistantMessage(this, assistantIndex, 'AI 暂时没有回应，请稍后再试。', false);
