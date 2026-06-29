@@ -14,7 +14,17 @@
   </scroll-view>
 
   <view class="composer">
-    <input class="composer__input" placeholder="比如：孩子写作业拖了 3 小时怎么办" value="{{inputValue}}" bindinput="onInput" bindconfirm="sendMessage" confirm-type="send" />
+    <textarea
+      class="composer__input"
+      placeholder="比如：孩子写作业拖了 3 小时怎么办"
+      value="{{inputValue}}"
+      bindinput="onInput"
+      auto-height="{{true}}"
+      maxlength="-1"
+      confirm-type="send"
+      hold-keyboard="{{true}}"
+      show-confirm-bar="{{false}}"
+    />
     <button class="composer__button" bindtap="sendMessage" loading="{{isSending}}" disabled="{{isSending}}">发送</button>
   </view>
 </view>
