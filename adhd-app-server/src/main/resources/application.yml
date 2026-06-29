@@ -19,7 +19,7 @@ sa-token:
   is-read-header: true
   is-read-cookie: false
   is-read-body: false
-  token-prefix: Bearer
+  is-prefix: Bearer
 
 mybatis-plus:
   configuration:
@@ -42,4 +42,4 @@ app:
   model:
     base-url: ${MODEL_BASE_URL:http://43.142.79.65:8080/v1}
     api-key: ${MODEL_API_KEY:EMPTY}
-    model: ${MODEL_NAME:gpt-4o-mini}
+    model: ${MODEL_NAME:qwen3.5}
