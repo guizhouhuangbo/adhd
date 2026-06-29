@@ -32,6 +32,7 @@ Page({
     isSending: false,
     isLoadingHistory: false,
     scrollIntoView: 'chat-bottom',
+    scrollTop: 0,
   },
 
   onInput(event) {
@@ -52,20 +53,20 @@ Page({
       this.bottomScrollTimer = null;
     }
 
-    this.setData({ scrollIntoView: '' }, () => {
+    this.setData({ scrollIntoView: '', scrollTop: 999999 }, () => {
       wx.nextTick(() => {
-        this.setData({ scrollIntoView: 'chat-bottom' });
+        this.setData({ scrollIntoView: 'chat-bottom', scrollTop: 999999 });
       });
     });
 
     this.bottomScrollTimer = setTimeout(() => {
-      this.setData({ scrollIntoView: '' }, () => {
+      this.setData({ scrollIntoView: '', scrollTop: 999999 }, () => {
         wx.nextTick(() => {
-          this.setData({ scrollIntoView: 'chat-bottom' });
+          this.setData({ scrollIntoView: 'chat-bottom', scrollTop: 999999 });
         });
       });
       this.bottomScrollTimer = null;
-    }, 120);
+    }, 260);
   },
 
   onUnload() {

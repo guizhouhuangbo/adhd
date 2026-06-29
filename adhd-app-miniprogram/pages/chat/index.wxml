@@ -4,7 +4,7 @@
     <view class="section-subtitle">AI 会先共情,再给你一个今晚能执行的小建议</view>
   </view>
 
-  <scroll-view class="chat-scroll" scroll-y="true" scroll-with-animation="true" scroll-into-view="{{scrollIntoView}}">
+  <scroll-view class="chat-scroll" scroll-y="true" scroll-with-animation="true" scroll-into-view="{{scrollIntoView}}" scroll-top="{{scrollTop}}">
     <block wx:for="{{messages}}" wx:key="index">
       <view class="bubble bubble--{{item.role}} {{item.streaming ? 'bubble--streaming' : ''}}">
         <rich-text nodes="{{item.html}}"></rich-text>
