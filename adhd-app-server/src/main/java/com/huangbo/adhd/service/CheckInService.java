@@ -11,6 +11,7 @@ import com.huangbo.adhd.mapper.TaskMapper;
 import com.huangbo.adhd.mapper.UserMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,6 +56,10 @@ public class CheckInService {
         checkInMapper.insert(checkIn);
 
         task.setCompleted(true);
+        task.setCurrentStepIndex((int) Arrays.stream(task.getStepsJson().split("\\|\\|"))
+            .map(String::trim)
+            .filter(step -> !step.isBlank())
+            .count());
         task.setUpdatedAt(LocalDateTime.now());
         taskMapper.updateById(task);
 

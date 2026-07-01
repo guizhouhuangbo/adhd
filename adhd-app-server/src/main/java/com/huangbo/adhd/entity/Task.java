@@ -16,6 +16,7 @@ public class Task {
     private String scheduleLabel;
     private String stepsJson;
     private Boolean completed;
+    private Integer currentStepIndex;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -73,6 +74,14 @@ public class Task {
 
     public void setCompleted(Boolean completed) {
         this.completed = completed;
+    }
+
+    public Integer getCurrentStepIndex() {
+        return currentStepIndex;
+    }
+
+    public void setCurrentStepIndex(Integer currentStepIndex) {
+        this.currentStepIndex = currentStepIndex;
     }
 
     public LocalDateTime getCreatedAt() {

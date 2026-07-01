@@ -88,6 +88,10 @@ function createTask(data) {
   return request({ url: '/tasks', method: 'POST', data });
 }
 
+function completeFocusRound(taskId) {
+  return request({ url: `/tasks/${taskId}/focus-complete`, method: 'POST' });
+}
+
 function getWeeklyReport() {
   return request({ url: '/reports/weekly' });
 }
@@ -243,6 +247,7 @@ module.exports = {
   getDashboard,
   getTasks,
   createTask,
+  completeFocusRound,
   checkIn,
   getWeeklyReport,
   getChatHistory,

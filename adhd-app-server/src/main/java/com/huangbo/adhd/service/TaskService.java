@@ -48,16 +48,25 @@ public class TaskService {
         task.setScheduleLabel("今晚 19:30");
         task.setStepsJson(String.join("||", steps));
         task.setCompleted(false);
+        task.setCurrentStepIndex(0);
         task.setCreatedAt(LocalDateTime.now());
         task.setUpdatedAt(LocalDateTime.now());
         taskMapper.insert(task);
         return toView(task);
     }
 
+    public TaskView advanceTaskStep(Long userId, Long taskId) {
+        Task task = getTask(userId, taskId);
+        List<String> steps = extractSteps(task);
+        int nextStepIndex = Math.min(steps.size(), Math.max(0, safeStepIndex(task)) + 1);
+        task.setCurrentStepIndex(nextStepIndex);
+        task.setUpdatedAt(LocalDateTime.now());
+        taskMapper.updateById(task);
+        return toView(task);
+    }
+
     private TaskView toView(Task task) {
-        List<String> steps = Arrays.stream(task.getStepsJson().split("\\|\\|"))
-            .filter(step -> !step.isBlank())
-            .toList();
+        List<String> steps = extractSteps(task);
         String stepsText = steps.stream().collect(Collectors.joining(" / "));
         return new TaskView(
             task.getId(),
@@ -66,7 +75,8 @@ public class TaskService {
             task.getScheduleLabel(),
             steps,
             stepsText,
-            Boolean.TRUE.equals(task.getCompleted())
+            Boolean.TRUE.equals(task.getCompleted()),
+            Math.min(steps.size(), Math.max(0, safeStepIndex(task)))
         );
     }
 
@@ -83,9 +93,32 @@ public class TaskService {
         task.setScheduleLabel(scheduleLabel);
         task.setStepsJson(steps);
         task.setCompleted(false);
+        task.setCurrentStepIndex(0);
         task.setCreatedAt(LocalDateTime.now());
         task.setUpdatedAt(LocalDateTime.now());
         taskMapper.insert(task);
+    }
+
+    private Task getTask(Long userId, Long taskId) {
+        Task task = taskMapper.selectOne(new LambdaQueryWrapper<Task>()
+            .eq(Task::getId, taskId)
+            .eq(Task::getUserId, userId)
+            .last("limit 1"));
+        if (task == null) {
+            throw new IllegalStateException("任务不存在");
+        }
+        return task;
+    }
+
+    private List<String> extractSteps(Task task) {
+        return Arrays.stream(task.getStepsJson().split("\\|\\|"))
+            .map(String::trim)
+            .filter(step -> !step.isBlank())
+            .toList();
+    }
+
+    private int safeStepIndex(Task task) {
+        return task.getCurrentStepIndex() == null ? 0 : task.getCurrentStepIndex();
     }
 
     private List<String> splitTask(String taskName) {

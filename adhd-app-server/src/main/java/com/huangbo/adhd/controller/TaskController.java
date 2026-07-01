@@ -8,6 +8,7 @@ import com.huangbo.adhd.service.TaskService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,5 +32,10 @@ public class TaskController {
     @PostMapping
     public Result<TaskView> create(@Valid @RequestBody TaskCreateRequest request) {
         return Result.success(taskService.createTask(AuthContext.getUserId(), request));
+    }
+
+    @PostMapping("/{taskId}/focus-complete")
+    public Result<TaskView> focusComplete(@PathVariable Long taskId) {
+        return Result.success(taskService.advanceTaskStep(AuthContext.getUserId(), taskId));
     }
 }

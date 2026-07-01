@@ -1,4 +1,95 @@
 <view class="page-shell">
+  <view class="task-page-loading" wx:if="{{creatingTask}}">
+    <view class="task-page-loading__card">
+      <view class="task-page-loading__icon">🍅</view>
+      <view class="task-page-loading__title">正在拆分任务</view>
+      <view class="task-page-loading__desc">AI 正在把大任务拆成孩子更容易开始的小步骤</view>
+    </view>
+  </view>
+
+  <view class="sensory-overlay" wx:if="{{sensoryOverlayVisible && activeSensoryPlan}}">
+    <view class="sensory-overlay__inner">
+      <view class="sensory-overlay__eyebrow">家庭感统训练支持</view>
+      <view class="sensory-overlay__title">{{activeSensoryPlan.title}}</view>
+      <view class="sensory-overlay__subtitle">{{activeSensoryPlan.subtitle}}</view>
+
+      <view class="sensory-card">
+        <view class="sensory-card__icon">{{activeSensoryPlan.steps[activeSensoryStepIndex].icon}}</view>
+        <view class="sensory-card__step-title">{{activeSensoryPlan.steps[activeSensoryStepIndex].title}}</view>
+        <view class="sensory-card__detail">{{activeSensoryPlan.steps[activeSensoryStepIndex].detail}}</view>
+        <view class="sensory-card__clock">{{sensoryStepClockText}}</view>
+        <view class="sensory-card__progress-track">
+          <view class="sensory-card__progress-fill" style="width: {{sensoryStepProgress}}%;"></view>
+        </view>
+        <view class="sensory-card__meta">第 {{activeSensoryStepIndex + 1}} / {{activeSensoryPlan.steps.length}} 步</view>
+      </view>
+
+      <view class="sensory-overlay__actions">
+        <button class="primary-button sensory-overlay__primary" bindtap="startSensoryStep">开始这一小步</button>
+        <button class="ghost-button sensory-overlay__secondary" bindtap="nextSensoryStep">跳到下一步</button>
+      </view>
+      <button class="ghost-button sensory-overlay__apply" bindtap="applySensoryThenFocus">做完就开始专注</button>
+      <button class="sensory-overlay__close" bindtap="closeSensoryOverlay">返回任务页</button>
+    </view>
+  </view>
+
+  <view class="focus-overlay {{focusBackgroundClass}}" wx:if="{{focusOverlayVisible}}">
+    <view class="focus-overlay__inner">
+      <view class="focus-overlay__celebration" wx:if="{{showCelebration}}">
+        <view class="focus-overlay__spark focus-overlay__spark--1">⭐</view>
+        <view class="focus-overlay__spark focus-overlay__spark--2">🎉</view>
+        <view class="focus-overlay__spark focus-overlay__spark--3">🍅</view>
+        <view class="focus-overlay__spark focus-overlay__spark--4">🌟</view>
+      </view>
+      <view class="focus-overlay__eyebrow">当前专注任务</view>
+      <view class="focus-overlay__task">{{activeTaskName}}</view>
+      <view class="focus-overlay__clock">{{restingMode ? restClockText : focusClockText}}</view>
+      <view class="focus-overlay__status">{{focusStatusText}}</view>
+      <view class="focus-overlay__encouragement">{{focusEncouragement}}</view>
+
+      <view class="hourglass {{focusRunning ? 'hourglass--running' : ''}} {{focusFinished ? 'hourglass--finished' : ''}} {{showCelebration ? 'hourglass--celebrate' : ''}}">
+        <view class="hourglass__frame">
+          <view class="hourglass__glow"></view>
+          <view class="hourglass__cap hourglass__cap--top"></view>
+          <view class="hourglass__glass hourglass__glass--top">
+            <view class="hourglass__sand hourglass__sand--top" style="height: {{100 - focusProgress}}%;"></view>
+          </view>
+          <view class="hourglass__neck"></view>
+          <view class="hourglass__glass hourglass__glass--bottom">
+            <view class="hourglass__sand hourglass__sand--bottom" style="height: {{focusProgress}}%;"></view>
+          </view>
+          <view class="hourglass__stream" wx:if="{{focusRunning}}"></view>
+          <view class="hourglass__sparkle hourglass__sparkle--1" wx:if="{{focusRunning}}"></view>
+          <view class="hourglass__sparkle hourglass__sparkle--2" wx:if="{{focusRunning}}"></view>
+          <view class="hourglass__cap hourglass__cap--bottom"></view>
+        </view>
+      </view>
+
+      <view class="focus-overlay__progress-track">
+        <view class="focus-overlay__progress-fill" style="width: {{focusProgress}}%;"></view>
+      </view>
+
+      <view class="focus-overlay__actions" wx:if="{{!focusFinished && !restingMode}}">
+        <button class="primary-button focus-overlay__primary" bindtap="handleFocusAction">{{focusButtonText}}</button>
+        <button class="ghost-button focus-overlay__secondary" bindtap="resetFocus">重置</button>
+      </view>
+
+      <view class="focus-overlay__actions focus-overlay__actions--finished" wx:if="{{focusFinished}}">
+        <button class="primary-button focus-overlay__primary" bindtap="handleImmediateCheckIn">立即打卡</button>
+        <button class="ghost-button focus-overlay__secondary" bindtap="handleFocusAction">再来一轮</button>
+      </view>
+      <button class="ghost-button focus-overlay__rest" wx:if="{{focusFinished}}" bindtap="startRestMode">休息 3 分钟</button>
+
+      <view class="focus-overlay__actions" wx:if="{{restingMode}}">
+        <button class="primary-button focus-overlay__primary" bindtap="handleFocusAction">开始下一轮</button>
+        <button class="ghost-button focus-overlay__secondary" bindtap="closeFocusOverlay">先回列表</button>
+      </view>
+
+      <button class="focus-overlay__close" wx:if="{{!focusRunning}}" bindtap="closeFocusOverlay">返回任务列表</button>
+    </view>
+  </view>
+
+  <scroll-view class="task-scroll" scroll-y="true" scroll-with-animation="true" scroll-into-view="{{taskListAnchor}}">
   <view class="panel create-panel">
     <view class="section-title">添加一个真实场景任务</view>
     <view class="section-subtitle">比如: 放学后整理书包、睡前洗澡、写语文作业</view>
@@ -6,21 +97,98 @@
     <button class="primary-button" bindtap="createTask">创建并自动拆分</button>
   </view>
 
+  <view class="panel focus-panel">
+    <view class="focus-panel__top">
+      <view>
+        <view class="section-title">🍅 ADHD 改良版番茄时钟</view>
+        <view class="section-subtitle">短专注,立即强化,先完成一小步就很好</view>
+      </view>
+      <view class="focus-panel__badge">{{focusProgress}}%</view>
+    </view>
+
+    <view class="focus-timer-card">
+      <view class="focus-timer-card__task">{{activeTaskName}}</view>
+      <view class="focus-timer-card__clock">{{focusClockText}}</view>
+      <view class="focus-timer-card__status">{{focusStatusText}}</view>
+      <view class="focus-progress-track">
+        <view class="focus-progress-fill" style="width: {{focusProgress}}%;"></view>
+      </view>
+    </view>
+
+    <view class="focus-slider-card">
+      <view class="focus-slider-card__top">
+        <view class="focus-slider-card__label">专注时长</view>
+        <view class="focus-slider-card__value">{{focusMinutes}} 分钟</view>
+      </view>
+      <slider
+        class="focus-slider"
+        min="{{minFocusMinutes}}"
+        max="{{maxFocusMinutes}}"
+        step="1"
+        value="{{focusMinutes}}"
+        activeColor="#FF8A5B"
+        backgroundColor="#F0E3D4"
+        block-color="#4ECDC4"
+        block-size="20"
+        bindchange="onFocusMinutesChange"
+      />
+      <view class="focus-slider-card__scale">
+        <text>{{minFocusMinutes}} 分钟</text>
+        <text>{{maxFocusMinutes}} 分钟</text>
+      </view>
+    </view>
+
+    <view class="focus-actions">
+      <button class="primary-button focus-actions__primary" bindtap="handleFocusAction">{{focusButtonText}}</button>
+      <button class="ghost-button focus-actions__secondary" bindtap="resetFocus">重置倒计时</button>
+    </view>
+  </view>
+
+  <view class="panel sensory-panel">
+    <view class="section-title">家庭感统训练支持</view>
+    <view class="section-subtitle">先用 3-4 分钟做身体准备,再进入任务会更顺</view>
+    <block wx:for="{{sensoryPlans}}" wx:key="id">
+      <view class="sensory-plan-card sensory-plan-card--{{item.theme}}">
+        <view class="sensory-plan-card__top">
+          <view>
+            <view class="sensory-plan-card__title">{{item.title}}</view>
+            <view class="sensory-plan-card__subtitle">{{item.subtitle}}</view>
+          </view>
+          <view class="sensory-plan-card__tag">{{item.tag}}</view>
+        </view>
+        <view class="sensory-plan-card__meta">{{item.durationLabel}} · {{item.steps.length}} 个小动作</view>
+        <button class="ghost-button sensory-plan-card__button" data-id="{{item.id}}" bindtap="openSensoryPlan">开始引导</button>
+      </view>
+    </block>
+  </view>
+
   <view class="section-header">
     <view class="section-title">任务列表</view>
-    <view class="section-subtitle">每个任务都拆成 3-5 个可执行小步骤</view>
+    <view class="section-subtitle">先选任务,再开一轮 8-12 分钟短专注</view>
   </view>
 
   <block wx:for="{{tasks}}" wx:key="id">
-    <view class="task-card task-item">
+    <view id="task-{{item.id}}" class="task-card task-item {{activeTaskId === item.id ? 'task-item--active' : ''}}" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="selectTaskForFocus">
       <view class="task-item__top">
         <view class="task-item__name">{{item.name}}</view>
         <view class="task-item__stars">+{{item.rewardStars}} 星</view>
       </view>
       <view class="task-item__schedule">提醒时间: {{item.scheduleLabel}}</view>
-      <view class="task-item__steps">{{item.stepsText}}</view>
-      <button class="ghost-button task-item__action" wx:if="{{!item.completed}}" data-id="{{item.id}}" bindtap="completeTask">完成打卡</button>
+      <view class="task-item__step-list">
+        <block wx:for="{{item.steps}}" wx:key="index">
+          <view class="task-item__step {{index < item.currentStepIndex ? 'task-item__step--done' : ''}}">
+            <view class="task-item__step-dot">{{index < item.currentStepIndex ? '✓' : index + 1}}</view>
+            <view class="task-item__step-text">{{item}}</view>
+          </view>
+        </block>
+      </view>
+      <view class="task-item__actions" wx:if="{{!item.completed}}">
+        <button class="ghost-button task-item__action" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="selectTaskForFocus">选为当前任务</button>
+        <button class="primary-button task-item__action task-item__action--focus" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="startFocusFromTask">开始专注</button>
+        <button class="ghost-button task-item__action" data-id="{{item.id}}" bindtap="completeTask">完成打卡</button>
+      </view>
       <view class="task-item__done" wx:else>今天已打卡</view>
     </view>
   </block>
+  </scroll-view>
 </view>

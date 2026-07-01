@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS task (
     schedule_label VARCHAR(64) NOT NULL,
     steps_json TEXT NOT NULL,
     completed TINYINT(1) NOT NULL DEFAULT 0,
+    current_step_index INT NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_task_user_id (user_id)
