@@ -113,12 +113,26 @@ function doStreamChatMessage(message, handlers = {}) {
     let buffer = '';
     let completed = false;
     let requestTask;
+    let timeoutTimer;
+
+    const resetTimeout = () => {
+      if (timeoutTimer) {
+        clearTimeout(timeoutTimer);
+      }
+      timeoutTimer = setTimeout(() => {
+        fail({ message: 'AI 响应超时，请稍后再试' });
+      }, 28000);
+    };
 
     const finish = () => {
       if (completed) {
         return;
       }
       completed = true;
+      if (timeoutTimer) {
+        clearTimeout(timeoutTimer);
+        timeoutTimer = null;
+      }
       resolve();
     };
 
@@ -127,10 +141,18 @@ function doStreamChatMessage(message, handlers = {}) {
         return;
       }
       completed = true;
+      if (timeoutTimer) {
+        clearTimeout(timeoutTimer);
+        timeoutTimer = null;
+      }
+      if (requestTask && requestTask.abort) {
+        requestTask.abort();
+      }
       reject(error);
     };
 
     const consume = (chunk) => {
+      resetTimeout();
       buffer += chunk.replace(/\r\n/g, '\n');
 
       if (!buffer.includes('\n\n')) {
@@ -190,6 +212,7 @@ function doStreamChatMessage(message, handlers = {}) {
       data: { message },
       enableChunked: true,
       responseType: 'text',
+      timeout: 25000,
       header: {
         'content-type': 'application/json',
         Authorization: `Bearer ${app.globalData.token}`,
@@ -225,6 +248,8 @@ function doStreamChatMessage(message, handlers = {}) {
         consume(decodeChunkData(chunkRes.data));
       });
     }
+
+    resetTimeout();
   });
 }
 

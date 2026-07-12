@@ -12,7 +12,9 @@ import com.huangbo.adhd.mapper.UserMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CheckInService {
@@ -27,6 +29,7 @@ public class CheckInService {
         this.userMapper = userMapper;
     }
 
+    @Transactional
     public CheckInResponse checkIn(Long userId, CheckInRequest request) {
         Task task = taskMapper.selectOne(new LambdaQueryWrapper<Task>()
             .eq(Task::getId, request.taskId())
@@ -35,13 +38,11 @@ public class CheckInService {
             throw new IllegalStateException("任务不存在");
         }
 
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        LocalDate today = LocalDate.now();
         CheckIn existed = checkInMapper.selectOne(new LambdaQueryWrapper<CheckIn>()
             .eq(CheckIn::getUserId, userId)
             .eq(CheckIn::getTaskId, task.getId())
-            .ge(CheckIn::getCreatedAt, startOfDay)
-            .lt(CheckIn::getCreatedAt, endOfDay)
+            .eq(CheckIn::getCheckDate, today)
             .last("limit 1"));
         if (existed != null) {
             throw new IllegalStateException("今天这项任务已经打卡过了");
@@ -50,10 +51,15 @@ public class CheckInService {
         CheckIn checkIn = new CheckIn();
         checkIn.setUserId(userId);
         checkIn.setTaskId(task.getId());
+        checkIn.setCheckDate(today);
         checkIn.setStarsEarned(task.getRewardStars());
         checkIn.setNote(request.note());
         checkIn.setCreatedAt(LocalDateTime.now());
-        checkInMapper.insert(checkIn);
+        try {
+            checkInMapper.insert(checkIn);
+        } catch (DuplicateKeyException ex) {
+            throw new IllegalStateException("今天这项任务已经打卡过了", ex);
+        }
 
         task.setCompleted(true);
         task.setCurrentStepIndex((int) Arrays.stream(task.getStepsJson().split("\\|\\|"))
@@ -64,6 +70,9 @@ public class CheckInService {
         taskMapper.updateById(task);
 
         User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new IllegalStateException("用户不存在");
+        }
         user.setTotalStars(user.getTotalStars() + task.getRewardStars());
         user.setUpdatedAt(LocalDateTime.now());
         userMapper.updateById(user);

@@ -6,7 +6,7 @@
 
   <scroll-view class="chat-scroll" scroll-y="true" scroll-with-animation="true" scroll-into-view="{{scrollIntoView}}" scroll-top="{{scrollTop}}">
     <block wx:for="{{messages}}" wx:key="index">
-      <view class="bubble bubble--{{item.role}} {{item.streaming ? 'bubble--streaming' : ''}}">
+      <view class="bubble bubble--{{item.role}} {{item.streamingClass}}">
         <rich-text nodes="{{item.html}}"></rich-text>
       </view>
     </block>
@@ -19,10 +19,11 @@
       placeholder="比如：孩子写作业拖了 3 小时怎么办"
       value="{{inputValue}}"
       bindinput="onInput"
+      bindconfirm="onConfirm"
       auto-height="{{true}}"
       maxlength="-1"
       confirm-type="send"
-      hold-keyboard="{{true}}"
+      hold-keyboard="{{false}}"
       show-confirm-bar="{{false}}"
     />
     <button class="composer__button" bindtap="sendMessage" loading="{{isSending}}" disabled="{{isSending}}">发送</button>

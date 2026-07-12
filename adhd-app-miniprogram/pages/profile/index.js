@@ -3,7 +3,7 @@ const api = require('../../utils/api');
 Page({
   data: {
     profile: {
-      parentName: 'ADHD 家长',
+      parentName: '小步星家长',
       childName: '小朋友',
       childAge: 8,
       totalStars: 18,

@@ -1,8 +1,7 @@
 const api = require('../../utils/api');
 
 const DEFAULT_FOCUS_MINUTES = 10;
-const MIN_FOCUS_MINUTES = 5;
-const MAX_FOCUS_MINUTES = 30;
+const FOCUS_MINUTE_OPTIONS = [3, 5, 8, 10, 12];
 const GENERIC_ENCOURAGEMENTS = [
   '先盯住第一小步，做一点也算开始。',
   '你已经在坚持了，慢一点也没关系。',
@@ -94,10 +93,13 @@ Page({
     taskListAnchor: '',
     creatingTask: false,
     focusMinutes: DEFAULT_FOCUS_MINUTES,
-    minFocusMinutes: MIN_FOCUS_MINUTES,
-    maxFocusMinutes: MAX_FOCUS_MINUTES,
+    focusMinuteOptions: FOCUS_MINUTE_OPTIONS.map((minutes) => ({
+      minutes,
+      activeClass: minutes === DEFAULT_FOCUS_MINUTES ? 'focus-minute-option--active' : '',
+    })),
     activeTaskId: null,
     activeTaskName: '先选择一个任务开始专注',
+    activeTaskNextStep: '先选择一个任务',
     focusTotalSeconds: DEFAULT_FOCUS_MINUTES * 60,
     focusRemainingSeconds: DEFAULT_FOCUS_MINUTES * 60,
     focusClockText: formatClock(DEFAULT_FOCUS_MINUTES * 60),
@@ -158,11 +160,33 @@ Page({
   loadTasks() {
     api.getTasks()
       .then((tasks) => {
-        this.setData({ tasks }, () => this.syncActiveTask(tasks));
+        const preparedTasks = this.prepareTasks(tasks);
+        this.setData({ tasks: preparedTasks }, () => this.syncActiveTask(preparedTasks));
       })
       .catch(() => {
         wx.showToast({ title: '任务加载失败', icon: 'none' });
       });
+  },
+
+  prepareTasks(tasks, activeTaskId = this.data.activeTaskId) {
+    if (!Array.isArray(tasks)) {
+      return [];
+    }
+    return tasks.map((task) => {
+      const steps = Array.isArray(task.steps) ? task.steps : [];
+      const currentStepIndex = Math.min(steps.length, Math.max(0, Number(task.currentStepIndex) || 0));
+      const nextStepText = steps[currentStepIndex] || (task.completed ? '今天已经完成' : '先开始第一小步');
+      return {
+        ...task,
+        steps,
+        currentStepIndex,
+        activeClass: task.id === activeTaskId ? 'task-item--active' : '',
+        nextStepText,
+        stepProgressText: steps.length ? `${currentStepIndex}/${steps.length}` : '0/0',
+        stepProgressPercent: steps.length ? Math.round((currentStepIndex / steps.length) * 100) : 0,
+        canCheckIn: !task.completed && steps.length > 0 && currentStepIndex >= steps.length,
+      };
+    });
   },
 
   syncActiveTask(tasks) {
@@ -171,6 +195,7 @@ Page({
       this.setData({
         activeTaskId: null,
         activeTaskName: '先创建一个任务，再开始专注',
+        activeTaskNextStep: '添加一个真实场景任务后，先做第一小步',
         focusRunning: false,
         focusFinished: false,
         focusOverlayVisible: false,
@@ -188,7 +213,10 @@ Page({
 
     const currentTask = tasks.find((task) => task.id === this.data.activeTaskId && !task.completed);
     if (currentTask) {
-      this.setData({ activeTaskName: currentTask.name });
+      this.setData({
+        activeTaskName: currentTask.name,
+        activeTaskNextStep: currentTask.nextStepText,
+      });
       return;
     }
 
@@ -200,8 +228,8 @@ Page({
     this.resetTaskSelection(nextTask.id, nextTask.name, true);
   },
 
-  onFocusMinutesChange(event) {
-    const nextMinutes = Number(event.detail.value);
+  onFocusMinutesSelect(event) {
+    const nextMinutes = Number(event.currentTarget.dataset.minutes);
     if (!nextMinutes || this.data.focusRunning) {
       return;
     }
@@ -209,6 +237,7 @@ Page({
     const totalSeconds = nextMinutes * 60;
     this.setData({
       focusMinutes: nextMinutes,
+      focusMinuteOptions: this.buildFocusMinuteOptions(nextMinutes),
       focusTotalSeconds: totalSeconds,
       focusRemainingSeconds: totalSeconds,
       focusClockText: formatClock(totalSeconds),
@@ -217,6 +246,13 @@ Page({
       focusStatusText: this.data.activeTaskId ? `已设置 ${nextMinutes} 分钟，按开始进入这一轮短专注` : '先选任务，再开始一轮短专注',
       focusButtonText: '开始专注',
     });
+  },
+
+  buildFocusMinuteOptions(activeMinutes) {
+    return FOCUS_MINUTE_OPTIONS.map((minutes) => ({
+      minutes,
+      activeClass: minutes === activeMinutes ? 'focus-minute-option--active' : '',
+    }));
   },
 
   selectTaskForFocus(event) {
@@ -261,6 +297,16 @@ Page({
     setTimeout(() => {
       this.handleFocusAction();
     }, 0);
+  },
+
+  handlePrimaryTaskAction(event) {
+    const { id, name } = event.currentTarget.dataset;
+    const task = this.data.tasks.find((item) => item.id === Number(id));
+    if (task && task.canCheckIn) {
+      this.completeTask(event);
+      return;
+    }
+    this.startFocusFromTask({ currentTarget: { dataset: { id, name } } });
   },
 
   startFocus() {
@@ -410,8 +456,8 @@ Page({
     if (!updatedTask || !updatedTask.id) {
       return;
     }
-    const nextTasks = this.data.tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task));
-    this.setData({ tasks: nextTasks });
+    const nextTasks = this.prepareTasks(this.data.tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
+    this.setData({ tasks: nextTasks }, () => this.syncActiveTask(nextTasks));
   },
 
   clearEncouragementTimer() {
@@ -648,11 +694,13 @@ Page({
 
   resetTaskSelection(taskId, taskName, silent) {
     const totalSeconds = this.data.focusMinutes * 60;
+    const selectedTask = this.data.tasks.find((task) => task.id === Number(taskId));
     this.clearCountdownTimer();
     this.clearEncouragementTimer();
     this.setData({
       activeTaskId: taskId,
       activeTaskName: taskName,
+      activeTaskNextStep: selectedTask ? selectedTask.nextStepText : '先完成当前这一小步',
       focusTotalSeconds: totalSeconds,
       focusRemainingSeconds: totalSeconds,
       focusClockText: formatClock(totalSeconds),
@@ -669,6 +717,7 @@ Page({
       restSeconds: BREAK_MINUTES * 60,
       restClockText: formatClock(BREAK_MINUTES * 60),
     });
+    this.setData({ tasks: this.prepareTasks(this.data.tasks, taskId) });
     if (!silent) {
       wx.showToast({ title: '已选当前任务', icon: 'none' });
     }

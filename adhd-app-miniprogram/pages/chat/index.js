@@ -10,6 +10,7 @@ function formatMessage(role, content, streaming = false) {
     content,
     html: markdownToHtml(content),
     streaming,
+    streamingClass: streaming ? 'bubble--streaming' : '',
   };
 }
 
@@ -45,6 +46,15 @@ Page({
 
   onInput(event) {
     this.setData({ inputValue: event.detail.value });
+  },
+
+  onConfirm(event) {
+    const value = event.detail && event.detail.value;
+    if (typeof value === 'string') {
+      this.setData({ inputValue: value }, () => this.sendMessage());
+      return;
+    }
+    this.sendMessage();
   },
 
   onShow() {

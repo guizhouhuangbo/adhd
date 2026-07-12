@@ -38,9 +38,11 @@ CREATE TABLE IF NOT EXISTS check_in (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     task_id BIGINT NOT NULL,
+    check_date DATE NOT NULL,
     stars_earned INT NOT NULL DEFAULT 0,
     note VARCHAR(255) NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_check_in_user_id (user_id),
-    INDEX idx_check_in_task_id (task_id)
+    INDEX idx_check_in_task_id (task_id),
+    UNIQUE KEY uk_check_in_user_task_date (user_id, task_id, check_date)
 );

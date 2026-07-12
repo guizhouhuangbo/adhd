@@ -63,7 +63,7 @@ public class AIController {
 
     private void writeChunk(OutputStream outputStream, String delta) {
         try {
-            writeEvent(outputStream, null, objectMapper.writeValueAsString(Map.of("delta", delta)));
+            writeEvent(outputStream, "message", objectMapper.writeValueAsString(Map.of("delta", delta)));
         } catch (IOException ex) {
             throw new IllegalStateException("流式响应写出失败", ex);
         }

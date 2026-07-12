@@ -5,7 +5,7 @@
     <view class="hero__desc">{{dashboard.encouragement}}</view>
     <view class="hero__login-row">
       <view class="hero__login-status">登录状态：{{loginStatus}}</view>
-      <button class="ghost-button hero__login-button" bindtap="handleLogin">重新登录微信</button>
+      <button wx:if="{{showLoginButton}}" class="ghost-button hero__login-button" bindtap="handleLogin">重新登录微信</button>
     </view>
     <view class="hero__stats">
       <view class="hero__stat">

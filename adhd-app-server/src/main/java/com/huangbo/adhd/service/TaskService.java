@@ -124,7 +124,7 @@ public class TaskService {
     private List<String> splitTask(String taskName) {
         try {
             String content = modelClient.chat(
-                "你是 ADHD 儿童行为管理助手，请把家长输入的大任务拆成 4 条具体、短句、可执行的小步骤，每行一条，不要加编号。",
+                "你是 ADHD 儿童行为管理助手。只输出给用户看的最终步骤，不输出思考过程、推理过程、analysis、reasoning 或英文草稿。默认并优先使用简体中文输出，除非用户明确要求其他语言；不要中英混杂。请把家长输入的大任务拆成 4 条具体、短句、可执行的小步骤，每行一条，不要加编号。",
                 taskName
             );
             List<String> steps = Arrays.stream(content.split("\\r?\\n"))

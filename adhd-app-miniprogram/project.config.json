@@ -1,5 +1,5 @@
 {
-  "description": "ADHD helper miniprogram MVP",
+  "description": "小步星 miniprogram MVP",
   "packOptions": {
     "ignore": [],
     "include": []
@@ -32,7 +32,7 @@
   "compileType": "miniprogram",
   "libVersion": "3.6.6",
   "appid": "wxb329ab8c6e6904b3",
-  "projectname": "adhd-app-miniprogram",
+  "projectname": "xiaobuxing-miniprogram",
   "simulatorPluginLibVersion": {},
   "editorSetting": {}
 }

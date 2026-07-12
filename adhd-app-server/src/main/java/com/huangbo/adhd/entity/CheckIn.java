@@ -3,6 +3,7 @@ package com.huangbo.adhd.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @TableName("check_in")
@@ -12,6 +13,7 @@ public class CheckIn {
     private Long id;
     private Long userId;
     private Long taskId;
+    private LocalDate checkDate;
     private Integer starsEarned;
     private String note;
     private LocalDateTime createdAt;
@@ -38,6 +40,14 @@ public class CheckIn {
 
     public void setTaskId(Long taskId) {
         this.taskId = taskId;
+    }
+
+    public LocalDate getCheckDate() {
+        return checkDate;
+    }
+
+    public void setCheckDate(LocalDate checkDate) {
+        this.checkDate = checkDate;
     }
 
     public Integer getStarsEarned() {

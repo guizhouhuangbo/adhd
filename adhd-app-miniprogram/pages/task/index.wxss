@@ -493,7 +493,37 @@
 }
 
 .create-panel {
+  margin-top: 24rpx;
   padding: 28rpx;
+}
+
+.current-task-panel {
+  padding: 30rpx;
+  background: linear-gradient(180deg, #f4fffc 0%, #e6faf5 100%);
+  box-shadow: inset 0 0 0 2rpx rgba(78, 205, 196, 0.14);
+}
+
+.current-task-panel__name {
+  margin-top: 18rpx;
+  color: #2f2a27;
+  font-size: 34rpx;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.current-task-panel__step {
+  margin-top: 18rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 22rpx;
+  background: rgba(255, 255, 255, 0.78);
+  color: #275753;
+  font-size: 30rpx;
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+.current-task-panel__button {
+  margin-top: 24rpx;
 }
 
 .focus-panel {
@@ -597,6 +627,14 @@
   font-size: 24rpx;
 }
 
+.focus-timer-card__next {
+  margin-top: 10rpx;
+  color: #275753;
+  font-size: 26rpx;
+  line-height: 1.6;
+  font-weight: 600;
+}
+
 .focus-timer-card__clock {
   margin-top: 10rpx;
   font-size: 76rpx;
@@ -651,16 +689,30 @@
   font-weight: 700;
 }
 
-.focus-slider {
-  margin-top: 8rpx;
+.focus-minute-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 20rpx;
 }
 
-.focus-slider-card__scale {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6rpx;
-  color: #a0968c;
-  font-size: 22rpx;
+.focus-minute-option {
+  min-width: 118rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  margin: 0;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  background: #ffffff;
+  color: #7b746d;
+  font-size: 24rpx;
+  box-shadow: inset 0 0 0 2rpx rgba(255, 184, 77, 0.16);
+}
+
+.focus-minute-option--active {
+  background: #ff8a5b;
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .focus-actions {
@@ -724,6 +776,54 @@
   color: #7f7a75;
   font-size: 24rpx;
   line-height: 1.6;
+}
+
+.task-item__next-step {
+  margin-top: 18rpx;
+  padding: 22rpx;
+  border-radius: 22rpx;
+  background: #fffaf4;
+}
+
+.task-item__next-label {
+  color: #a0968c;
+  font-size: 22rpx;
+}
+
+.task-item__next-text {
+  margin-top: 8rpx;
+  color: #2f2a27;
+  font-size: 28rpx;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.task-item__progress-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 18rpx;
+}
+
+.task-item__progress-track {
+  flex: 1;
+  height: 16rpx;
+  border-radius: 999rpx;
+  background: #f1e8dd;
+  overflow: hidden;
+}
+
+.task-item__progress-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #4ecdc4 0%, #ffb84d 100%);
+}
+
+.task-item__progress-text {
+  min-width: 60rpx;
+  color: #8f8a83;
+  font-size: 22rpx;
+  text-align: right;
 }
 
 .task-item__step-list {

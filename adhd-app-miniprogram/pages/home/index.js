@@ -4,6 +4,8 @@ const app = getApp();
 Page({
   data: {
     ready: false,
+    isLoggedIn: false,
+    showLoginButton: true,
     loginStatus: '未登录',
     dashboard: {
       userName: '家长朋友',
@@ -29,8 +31,11 @@ Page({
   },
 
   syncLoginStatus() {
+    const isLoggedIn = Boolean(app.globalData.token);
     this.setData({
-      loginStatus: app.globalData.token ? '已登录，可请求后端接口' : '未登录，请先点按钮重新登录',
+      isLoggedIn: isLoggedIn,
+      showLoginButton: !isLoggedIn,
+      loginStatus: isLoggedIn ? '已登录，可请求后端接口' : '未登录，请先点按钮重新登录',
     });
   },
 
