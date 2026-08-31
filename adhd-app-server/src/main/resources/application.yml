@@ -4,14 +4,8 @@ server:
 spring:
   application:
     name: adhd-app-server
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/adhd?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
-    username: adhd
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  sql:
-    init:
-      mode: always
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
 sa-token:
   token-name: Authorization

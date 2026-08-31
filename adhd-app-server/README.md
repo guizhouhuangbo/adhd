@@ -43,6 +43,18 @@ mvn spring-boot:run
 
 首次启动会自动执行 `src/main/resources/schema.sql` 创建表。
 
+## 生产环境配置
+
+生产环境使用 `prod` Profile，数据库密码必须通过环境变量传入：
+
+```bash
+SPRING_PROFILES_ACTIVE="prod" \
+DB_PASSWORD="你的生产数据库密码" \
+java -jar app.jar
+```
+
+如需覆盖生产数据库地址或用户名，可额外设置 `DB_URL` 和 `DB_USERNAME`。
+
 ## 当前认证与模型配置
 
 - 登录: 微信小程序 `wx.login` + 后端 `jscode2session`
