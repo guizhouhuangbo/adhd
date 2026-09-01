@@ -1,4 +1,5 @@
-target/
+target/*
+!target/adhd-app-server-*.jar
 .git/
 .gitignore
 .idea/

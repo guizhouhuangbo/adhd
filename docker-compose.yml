@@ -1,15 +1,52 @@
+name: xiaobuxing
+
 services:
-  mysql:
-    image: mysql:8.4
-    container_name: local-mysql
+  adhd-app-server:
+    image: ccr.ccs.tencentyun.com/fight/adhd:0.1
+    container_name: adhd-app-server
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: adhd
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: ${DB_URL:-jdbc:mysql://172.17.0.8:3306/adhd?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false}
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      WECHAT_APP_ID: ${WECHAT_APP_ID:-}
+      WECHAT_APP_SECRET: ${WECHAT_APP_SECRET:-}
+      MODEL_BASE_URL: ${MODEL_BASE_URL:-http://43.142.79.65:8080/v1}
+      MODEL_API_KEY: ${MODEL_API_KEY:-EMPTY}
+      MODEL_NAME: ${MODEL_NAME:-gpt-4o-mini}
+    expose:
+      - "8080"
+    mem_limit: 768m
+    networks:
+      - app-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-volumes:
-  mysql_data:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: adhd-nginx
+    restart: unless-stopped
+    depends_on:
+      - adhd-app-server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./deploy/nginx/certs:/etc/nginx/certs:ro
+    mem_limit: 128m
+    networks:
+      - app-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  app-network:
+    driver: bridge

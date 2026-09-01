@@ -6,3 +6,7 @@ target/
 .vscode/
 *.iml
 *.log
+.env
+.env.*
+!.env.example
+deploy/nginx/certs/
